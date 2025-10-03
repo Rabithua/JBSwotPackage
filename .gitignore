@@ -107,3 +107,5 @@ playwright/.cache/
 # 其他
 *.tgz
 *.tar.gz
+
+swot/
