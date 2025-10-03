@@ -1,24 +1,24 @@
 # jbs-swot-email
 
-验证学生邮箱并返回学校名称，基于 swot 域名数据。支持多校区学校和别名。
+Verify student emails and get school names using swot domain data. Supports multi-campus schools and aliases.
 
-## 安装
+## Installation
 
 ```bash
 npm install jbs-swot-email
 ```
 
-## 使用
+## Usage
 
 ```javascript
 import { verify, school_name, school_name_primary } from "jbs-swot-email";
 
-// 验证邮箱（异步）
+// Verify email (async)
 const isValid = await verify("student@mit.edu"); // true
 
-// 获取所有学校名称（异步）- 支持多校区和别名
+// Get all school names (async) - supports multi-campus and aliases
 const schoolNames = await school_name("student@utoronto.ca");
-// 返回: [
+// Returns: [
 //   "University of St. Michael's College",
 //   "University of Toronto",
 //   "University of Toronto, Mississauga",
@@ -27,17 +27,25 @@ const schoolNames = await school_name("student@utoronto.ca");
 //   "Victoria University Toronto, University of Toronto"
 // ]
 
-// 获取主要学校名称（异步）- 向后兼容
+// Get primary school name (async) - backward compatible
 const primaryName = await school_name_primary("student@utoronto.ca");
-// 返回: "University of St. Michael's College"
+// Returns: "University of St. Michael's College"
 
-// 单一学校示例
+// Single school example
 const mitNames = await school_name("student@mit.edu");
-// 返回: ["Massachusetts Institute of Technology"]
+// Returns: ["Massachusetts Institute of Technology"]
 ```
 
 ## API
 
-- `verify(email: string): Promise<boolean>` - 验证邮箱是否为教育机构邮箱
-- `school_name(email: string): Promise<string[] | null>` - 获取所有学校名称（支持多校区和别名）
-- `school_name_primary(email: string): Promise<string | null>` - 获取主要学校名称（向后兼容）
+- `verify(email: string): Promise<boolean>` - Verify if email belongs to an educational institution
+- `school_name(email: string): Promise<string[] | null>` - Get all school names (supports multi-campus and aliases)
+- `school_name_primary(email: string): Promise<string | null>` - Get primary school name (backward compatible)
+
+## Features
+
+- ✅ Support for multi-campus schools (e.g., University of Toronto's various campuses)
+- ✅ Support for school aliases (e.g., ETH Zürich and Swiss Federal Institute of Technology)
+- ✅ Backward compatible API design
+- ✅ Based on authoritative swot domain database
+- ✅ Supports 25,000+ educational institution domains
