@@ -24,10 +24,3 @@ const schoolName = await school_name("student@mit.edu"); // "Massachusetts Insti
 
 - `verify(email: string): Promise<boolean>` - 验证邮箱是否为教育机构邮箱
 - `school_name(email: string): Promise<string | null>` - 获取学校名称
-
-## 特性
-
-- 🚀 极小的包体积（< 1KB）
-- 📦 延迟加载数据，减少初始加载时间
-- 🌍 支持全球教育机构域名
-- 📱 支持 ESM 和 CommonJS
