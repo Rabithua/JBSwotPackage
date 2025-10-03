@@ -1,9 +1,9 @@
 // 延迟加载数据，减少初始包体积
 let domainSet: Set<string> | null = null;
-let domainToName: Record<string, string> | null = null;
+let domainToNames: Record<string, string[]> | null = null;
 
 async function loadData() {
-  if (domainSet && domainToName) return;
+  if (domainSet && domainToNames) return;
 
   try {
     // 兼容Node.js和浏览器环境
@@ -26,11 +26,11 @@ async function loadData() {
     const names = JSON.parse(namesData);
 
     domainSet = new Set(domains.map((d: string) => d.toLowerCase()));
-    domainToName = names;
+    domainToNames = names;
   } catch (error) {
     console.warn("Failed to load swot data:", error);
     domainSet = new Set();
-    domainToName = {};
+    domainToNames = {};
   }
 }
 
@@ -67,7 +67,7 @@ export async function verify(email: string): Promise<boolean> {
   return longestMatchingDomain(d) !== null;
 }
 
-export async function school_name(email: string): Promise<string | null> {
+export async function school_name(email: string): Promise<string[] | null> {
   await loadData();
   const e = normalizeEmail(email);
   if (!e) return null;
@@ -75,5 +75,12 @@ export async function school_name(email: string): Promise<string | null> {
   if (!d) return null;
   const match = longestMatchingDomain(d);
   if (!match) return null;
-  return domainToName?.[match] ?? null;
+  return domainToNames?.[match] ?? null;
+}
+
+export async function school_name_primary(
+  email: string
+): Promise<string | null> {
+  const names = await school_name(email);
+  return names?.[0] ?? null;
 }

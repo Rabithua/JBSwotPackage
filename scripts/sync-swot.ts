@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 // Always clone/update into the current package directory's "swot" subfolder
 const TARGET_DIR = join(process.cwd(), "swot");
-const REPO = process.env.SWOT_REPO || "https://github.com/leereilly/swot.git";
+const REPO = process.env.SWOT_REPO || "https://github.com/JetBrains/swot.git";
 
 function run(cmd: string, cwd?: string) {
   execSync(cmd, { stdio: "inherit", cwd });

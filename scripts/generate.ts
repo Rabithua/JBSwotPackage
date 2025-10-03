@@ -46,20 +46,26 @@ function toDomainFromPath(filePath: string): string | null {
   return labels.join(".");
 }
 
-function extractName(filePath: string): string | null {
+function extractNames(filePath: string): string[] {
   try {
     const raw = readFileSync(filePath, "utf8");
     const lines = raw.split(/\r?\n/);
+    const names: string[] = [];
+
     for (const line of lines) {
       const trimmed = line.trim();
       if (!trimmed) continue;
       if (/^https?:\/\//i.test(trimmed)) continue;
       if (/^#/.test(trimmed)) continue;
-      return trimmed.replace(/^\d+\s*[:-]\s*/, "");
+
+      const cleanName = trimmed.replace(/^\d+\s*[:-]\s*/, "");
+      if (cleanName) {
+        names.push(cleanName);
+      }
     }
-    return null;
+    return names;
   } catch {
-    return null;
+    return [];
   }
 }
 
@@ -77,14 +83,14 @@ function main() {
     /\.(txt|no-ext|edu)$/i.test(p)
   );
   const domainSet = new Set<string>();
-  const names: Record<string, string> = {};
+  const names: Record<string, string[]> = {};
   for (const file of files) {
     const domain = toDomainFromPath(file);
     if (!domain) continue;
     domainSet.add(domain.toLowerCase());
-    const name = extractName(file);
-    if (name) {
-      names[domain.toLowerCase()] = name;
+    const schoolNames = extractNames(file);
+    if (schoolNames.length > 0) {
+      names[domain.toLowerCase()] = schoolNames;
     }
   }
   writeFileSync(OUT_DOMAINS, JSON.stringify(Array.from(domainSet), null, 0));
