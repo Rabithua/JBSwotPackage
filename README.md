@@ -95,6 +95,36 @@ This package uses domain data from the [JetBrains swot](https://github.com/JetBr
 
 The swot repository contains a hierarchically structured list of email domains belonging to educational institutions, including colleges, universities, and groups of schools.
 
+## Development
+
+### Scripts
+
+- `npm run sync:swot` - Sync JetBrains swot repository
+- `npm run generate` - Generate tree data structure
+- `npm run build` - Build production code
+- `npm run test` - Run unit tests
+- `npm run release` - 🚀 One-click release (sync, build, test, version, publish)
+
+### Release Process
+
+Use the automated release script:
+
+```bash
+npm run release
+```
+
+The release script will automatically:
+
+1. ✅ Pull latest swot data
+2. ✅ Generate data files
+3. ✅ Build production code
+4. ✅ Run test suite
+5. ✅ Update version number
+6. ✅ Git commit and tag
+7. ✅ Publish to npm
+
+See [scripts/README.md](scripts/README.md) for detailed documentation.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
