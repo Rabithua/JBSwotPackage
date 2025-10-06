@@ -6,24 +6,39 @@ import {
   mkdirSync,
 } from "node:fs";
 import { join, relative } from "node:path";
+import { gzipSync } from "node:zlib";
 
 const ROOT = process.cwd();
-// Read from local swot clone under the package directory
 const SWOT_DIR = join(ROOT, "swot");
 const DOMAINS_DIR = join(SWOT_DIR, "lib", "domains");
 const OUT_DIR = join(ROOT, "data");
 const OUT_TREE = join(OUT_DIR, "tree.json");
 
-// 扁平树状结构：
-// - 如果值是对象，可能表示有子节点
-// - 如果对象中有 "__names__" 键，表示该节点本身也是有效域名，值为学校名称数组
-// - 如果值是数组，表示这是叶子节点，数组内容是学校名称
-// - 空数组表示有效域名但无学校名称
-// - ["__STOPLIST__"] 表示该域名在 stoplist 中
-// - ["__ABUSED__"] 表示该域名在 abused 中
+const COMPRESSION_OPTIONS = {
+  compactJson: true,
+  useShortKeys: true,
+  deduplicateNames: true,
+  generateGzip: false,
+};
+
+/**
+ * Tree structure:
+ * - Object value: may have child nodes
+ * - Object with "__names__" (or "_n_") key: valid domain with subdomains
+ * - Array value: leaf node containing school names
+ * - Empty array: valid domain without school name
+ * - ["__STOPLIST__"] (or ["_S_"]): domain in stoplist
+ * - ["__ABUSED__"] (or ["_A_"]): domain is abused
+ */
 interface TreeNode {
   [key: string]: TreeNode | string[];
 }
+
+const KEYS = {
+  NAMES: COMPRESSION_OPTIONS.useShortKeys ? "_n_" : "__names__",
+  STOPLIST: COMPRESSION_OPTIONS.useShortKeys ? "_S_" : "__STOPLIST__",
+  ABUSED: COMPRESSION_OPTIONS.useShortKeys ? "_A_" : "__ABUSED__",
+};
 
 function listFilesRecursive(dir: string): string[] {
   const out: string[] = [];
@@ -61,6 +76,7 @@ function extractNames(filePath: string): string[] {
     const raw = readFileSync(filePath, "utf8");
     const lines = raw.split(/\r?\n/);
     const names: string[] = [];
+    const seen = new Set<string>();
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -70,15 +86,30 @@ function extractNames(filePath: string): string[] {
 
       const cleanName = trimmed.replace(/^\d+\s*[:-]\s*/, "");
       if (cleanName) {
-        // 如果名称中包含逗号，按逗号拆分为多个学校名称
         if (cleanName.includes(",")) {
           const splitNames = cleanName
             .split(",")
             .map((n) => n.trim())
             .filter(Boolean);
-          names.push(...splitNames);
+          for (const name of splitNames) {
+            if (COMPRESSION_OPTIONS.deduplicateNames) {
+              if (!seen.has(name)) {
+                seen.add(name);
+                names.push(name);
+              }
+            } else {
+              names.push(name);
+            }
+          }
         } else {
-          names.push(cleanName);
+          if (COMPRESSION_OPTIONS.deduplicateNames) {
+            if (!seen.has(cleanName)) {
+              seen.add(cleanName);
+              names.push(cleanName);
+            }
+          } else {
+            names.push(cleanName);
+          }
         }
       }
     }
@@ -108,8 +139,7 @@ function buildTree(files: string[]): TreeNode {
     const parts = domain.toLowerCase().split(".");
     const schoolNames = extractNames(file);
 
-    // 从根节点开始，按域名部分逐级构建树
-    // 例如：harvard.edu => ["edu", "harvard"] (反转，顶级域名在前)
+    // Reverse domain parts: harvard.edu => ["edu", "harvard"]
     const reversedParts = parts.slice().reverse();
 
     let current: any = root;
@@ -118,30 +148,24 @@ function buildTree(files: string[]): TreeNode {
       const isLast = i === reversedParts.length - 1;
 
       if (isLast) {
-        // 如果当前位置已经是对象（说明有子域名），使用 __names__ 键
         if (
           current[part] &&
           typeof current[part] === "object" &&
           !Array.isArray(current[part])
         ) {
-          current[part]["__names__"] =
-            schoolNames.length > 0 ? schoolNames : [];
+          current[part][KEYS.NAMES] = schoolNames.length > 0 ? schoolNames : [];
         } else {
-          // 否则直接存储为数组（叶子节点）
           current[part] = schoolNames.length > 0 ? schoolNames : [];
         }
         totalDomains++;
         if (schoolNames.length > 0) totalWithNames++;
       } else {
-        // 中间节点：如果不存在则创建对象
         if (!current[part]) {
           current[part] = {};
         } else if (Array.isArray(current[part])) {
-          // 如果当前是数组（之前是叶子节点），需要转换为对象
-          // 将原来的学校名称存到 __names__ 中
           const oldNames = current[part];
           current[part] = {
-            __names__: oldNames,
+            [KEYS.NAMES]: oldNames,
           };
         }
         current = current[part];
@@ -180,26 +204,21 @@ function addSpecialDomains(tree: TreeNode, domains: string[], marker: string) {
 
       if (isLast) {
         if (!current[part]) {
-          // 不存在，直接添加
           current[part] = [marker];
           added++;
         } else if (Array.isArray(current[part])) {
-          // 是数组，替换为特殊标记
           current[part] = [marker];
           added++;
         } else if (typeof current[part] === "object") {
-          // 是对象（有子域名），使用 __names__ 键
-          current[part]["__names__"] = [marker];
+          current[part][KEYS.NAMES] = [marker];
           added++;
         }
       } else {
-        // 中间节点
         if (!current[part]) {
           current[part] = {};
         } else if (Array.isArray(current[part])) {
-          // 转换为对象，保留原名称
           const oldNames = current[part];
-          current[part] = { __names__: oldNames };
+          current[part] = { [KEYS.NAMES]: oldNames };
         }
         current = current[part];
       }
@@ -211,7 +230,6 @@ function addSpecialDomains(tree: TreeNode, domains: string[], marker: string) {
 function main() {
   ensureDir(OUT_DIR);
   const files = listFilesRecursive(DOMAINS_DIR).filter((p) => {
-    // 过滤特殊文件：stoplist.txt, abused.txt, tlds.txt
     const fileName = p.split("/").pop() || "";
     if (["stoplist.txt", "abused.txt", "tlds.txt"].includes(fileName)) {
       return false;
@@ -221,20 +239,52 @@ function main() {
 
   const tree = buildTree(files);
 
-  // 读取 stoplist 和 abused 列表并添加到树中
   const stoplistPath = join(DOMAINS_DIR, "stoplist.txt");
   const abusedPath = join(DOMAINS_DIR, "abused.txt");
 
   const stoplist = readDomainList(stoplistPath);
   const abused = readDomainList(abusedPath);
 
-  const stoplistAdded = addSpecialDomains(tree, stoplist, "__STOPLIST__");
-  const abusedAdded = addSpecialDomains(tree, abused, "__ABUSED__");
+  const stoplistAdded = addSpecialDomains(tree, stoplist, KEYS.STOPLIST);
+  const abusedAdded = addSpecialDomains(tree, abused, KEYS.ABUSED);
 
-  writeFileSync(OUT_TREE, JSON.stringify(tree, null, 2));
+  const jsonString = COMPRESSION_OPTIONS.compactJson
+    ? JSON.stringify(tree)
+    : JSON.stringify(tree, null, 2);
+
+  writeFileSync(OUT_TREE, jsonString);
+  const originalSize = Buffer.byteLength(jsonString, "utf8");
   console.log(`Tree structure saved to ${OUT_TREE}`);
+  console.log(`Original size: ${(originalSize / 1024 / 1024).toFixed(2)} MB`);
+
+  if (COMPRESSION_OPTIONS.generateGzip) {
+    const gzipBuffer = gzipSync(jsonString, { level: 9 });
+    const gzipPath = `${OUT_TREE}.gz`;
+    writeFileSync(gzipPath, gzipBuffer);
+    const gzipSize = gzipBuffer.length;
+    console.log(`Gzipped version saved to ${gzipPath}`);
+    console.log(`Gzipped size: ${(gzipSize / 1024 / 1024).toFixed(2)} MB`);
+    console.log(
+      `Compression ratio: ${((gzipSize / originalSize) * 100).toFixed(2)}%`
+    );
+  }
+
   console.log(
     `Added ${stoplistAdded} stoplist domains and ${abusedAdded} abused domains`
+  );
+
+  console.log("\nCompression options:");
+  console.log(
+    `  - Compact JSON: ${COMPRESSION_OPTIONS.compactJson ? "✓" : "✗"}`
+  );
+  console.log(
+    `  - Short keys: ${COMPRESSION_OPTIONS.useShortKeys ? "✓" : "✗"}`
+  );
+  console.log(
+    `  - Deduplicate names: ${COMPRESSION_OPTIONS.deduplicateNames ? "✓" : "✗"}`
+  );
+  console.log(
+    `  - Generate gzip: ${COMPRESSION_OPTIONS.generateGzip ? "✓" : "✗"}`
   );
 }
 
