@@ -1,6 +1,6 @@
 {
   "name": "jbs-swot-email",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Verify student emails and get school names using swot domains.",
   "author": "rabithua",
   "license": "MIT",

@@ -104,11 +104,22 @@ async function main() {
   }
 
   // 5. 选择版本号更新类型
+  // 获取当前版本号
+  const currentVersion = runSilent(
+    "node -p \"require('./package.json').version\""
+  );
+  const [major, minor, patch] = currentVersion.split(".").map(Number);
+
+  const patchExample = `${major}.${minor}.${patch + 1}`;
+  const minorExample = `${major}.${minor + 1}.0`;
+  const majorExample = `${major + 1}.0.0`;
+
   log("\n========================================", "bright");
   log("选择版本号更新类型:", "bright");
-  log("  1) patch  - 补丁版本 (0.2.0 -> 0.2.1)", "blue");
-  log("  2) minor  - 次版本 (0.2.0 -> 0.3.0)", "blue");
-  log("  3) major  - 主版本 (0.2.0 -> 1.0.0)", "blue");
+  log(`  当前版本: ${currentVersion}`, "yellow");
+  log(`  1) patch  - 补丁版本 (${currentVersion} -> ${patchExample})`, "blue");
+  log(`  2) minor  - 次版本 (${currentVersion} -> ${minorExample})`, "blue");
+  log(`  3) major  - 主版本 (${currentVersion} -> ${majorExample})`, "blue");
   log("  4) custom - 自定义版本号", "blue");
   log("========================================\n", "bright");
 
