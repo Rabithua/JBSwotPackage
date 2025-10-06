@@ -109,3 +109,5 @@ playwright/.cache/
 *.tar.gz
 
 swot/
+
+demo/

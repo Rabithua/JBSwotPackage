@@ -1347,6 +1347,9 @@
         "Saint Joseph Jesuit Scholasticate",
         "Học Viện Thánh Giuse Dòng Tên"
       ],
+      "skylineschool": [
+        "Skylineschool"
+      ],
       "spkt": [
         "Trường Đại học Sư phạm Kỹ thuật Hưng Yên",
         "Hung Yen University of Technology and Education"
@@ -11323,6 +11326,9 @@
     "medtech": [
       "Mediterranean Institute of Technology"
     ],
+    "musteducation": [
+      "Maghreb University of Science and Technology"
+    ],
     "pi": [
       "Ecole Polytechnique Internationale Privée de Tunis"
     ],
@@ -12112,6 +12118,10 @@
       ],
       "lannaist": [
         "Lanna International School"
+      ],
+      "lannapoly": [
+        "วิทยาลัยเทคโนโลยีโปลิเทคนิคลานนาเชียงใหม่",
+        "Lanna Polytechnic Chiangmai Technological College"
       ],
       "lcat": [
         "Lamphun College of Agriculture and Technology"
@@ -22580,6 +22590,9 @@
       "wakai": [
         "__STOPLIST__"
       ],
+      "nullsto": [
+        "__STOPLIST__"
+      ],
       "gumed": [
         "__ABUSED__"
       ],
@@ -23194,6 +23207,9 @@
       ],
       "myers": [
         "Myer's College"
+      ],
+      "mykasbit": [
+        "KASB Institute of Technology"
       ],
       "namal": [
         "Namal Institute Minawali"
@@ -24390,6 +24406,10 @@
         "lucena": [
           "STI College Lucena",
           "STI College Lucena"
+        ],
+        "ormoc": [
+          "STI College Ormoc",
+          "STI College Ormoc"
         ],
         "calamba": [
           "__ABUSED__"
@@ -28551,6 +28571,10 @@
       "NORDAKADEMIE Hochschule der Wirtschaft",
       "NORDAKADEMIE University of Applied Sciences"
     ],
+    "nordicuniversity": [
+      "Xalqaro Nordik Universiteti",
+      "Nordic International University"
+    ],
     "norfolkacademy": [
       "Norfolk Academy"
     ],
@@ -32318,6 +32342,9 @@
       "virinchicollege": [
         "Virinchi College"
       ],
+      "viswaniketan": [
+        "Viswa Niketan Secondary School"
+      ],
       "wrc": [
         "Tribhuvan University",
         "Institute of Engineering",
@@ -34005,6 +34032,12 @@
       ],
       "aauekpoma": [
         "Ambrose Alli University"
+      ],
+      "abuad": [
+        "Afe Babalola University",
+        "Ado Ekiti",
+        "ABUAD",
+        "abuad"
       ],
       "achievers": [
         "Achievers University",
@@ -41143,6 +41176,10 @@
       "Казахский агротехнический университет имени С.Сейфуллина",
       "S.Seifullin Kazakh Agro Technical University"
     ],
+    "kazgasa": [
+      "Казахская головная архитектурно-строительная академия",
+      "Kazakh Leading Academy of Architecture and Civil Engineering"
+    ],
     "kazguu": [
       "Казахский государственный юридический университет имени М.С. Нарикбаева",
       "M. Narikbayev KAZGUU University"
@@ -42673,6 +42710,10 @@
       ],
       "myongji": [
         "Myongji University"
+      ],
+      "namhae": [
+        "경남도립남해대학교",
+        "University Of Gyeongnam Namhae"
       ],
       "nsu": [
         "남서울대학교",
@@ -45356,6 +45397,15 @@
       "nias": [
         "Nagasaki Institute of Applied Science"
       ],
+      "nihon-u": {
+        "__names__": [
+          "Nihon University"
+        ],
+        "g": [
+          "日本大学",
+          "Nihon University"
+        ]
+      },
       "numazu-vtc": [
         "Numazu Vocational Training Center"
       ],
@@ -45506,12 +45556,6 @@
             "Niigata University"
           ]
         }
-      },
-      "nihon-u": {
-        "g": [
-          "日本大学",
-          "Nihon University"
-        ]
       },
       "kbc": {
         "stu": [
@@ -48347,9 +48391,6 @@
       "uokirkuk": [
         "University of Kirkuk"
       ],
-      "uokufa": [
-        "University of Kufa"
-      ],
       "uomisan": [
         "Misan University"
       ],
@@ -48380,7 +48421,10 @@
           "University Of Ninevah",
           "College Of Information Technology"
         ]
-      }
+      },
+      "uokufa": [
+        "__ABUSED__"
+      ]
     }
   },
   "io": {
@@ -50932,6 +50976,9 @@
       "skit": [
         "Swami Keshvanand Institute of Technology"
       ],
+      "skuastkashmir": [
+        "Sher-e-Kashmir University of Agricultural Sciences and Technology of Kashmir"
+      ],
       "smvdu": [
         "Shri Mata Vaishno Devi University"
       ],
@@ -51059,6 +51106,9 @@
       ],
       "vnsgu": [
         "Veer Narmad South Gujarat University"
+      ],
+      "vrsec": [
+        "Velagapudi Ramakrishna Siddhartha Engineering College"
       ],
       "vupune": [
         "Vishwakarma University",
@@ -52586,6 +52636,9 @@
       ],
       "gunadarma": [
         "Universitas Gunadarma"
+      ],
+      "hacktiv8": [
+        "Hacktiv8"
       ],
       "hamzanwadi": {
         "__names__": [
@@ -56723,6 +56776,9 @@
     "campus-igs-toulouse": [
       "Campus IGS Toulouse - Ecole en Informatique IPI"
     ],
+    "campus-odyssee": [
+      "Ecole Odyssée"
+    ],
     "campus28": [
       "Campus cci 28",
       "-Chambre de Commerce et d'Industrie de Chartres",
@@ -58832,6 +58888,12 @@
     "42perpignan": {
       "student": [
         "42 Perpignan"
+      ]
+    },
+    "42paris": {
+      "student": [
+        "42 Paris",
+        "42 Paris"
       ]
     },
     "42lyon": {
@@ -87722,6 +87784,10 @@
     "brueggli": [
       "Brüggli"
     ],
+    "bsfh-lernende": [
+      "BSFH Berufsfachschule",
+      "BSFH Vocational School"
+    ],
     "bsl-lausanne": [
       "Business School Lausanne (BSL)"
     ],
@@ -94600,6 +94666,10 @@
     "campussintursula": [
       "Campus Sint Ursula Lier"
     ],
+    "cesjb": [
+      "Communauté Educative Saint-Jean-Baptiste",
+      "Saint-Jean-Baptiste Educational Community"
+    ],
     "cf2m": [
       "CF2m - Centre de Fomration TIC Bruxelles"
     ],
@@ -98314,6 +98384,10 @@
       ],
       "uncuyo": [
         "Universidad Nacional de Cuyo (UNCuyo)"
+      ],
+      "undav": [
+        "Universidad Nacional de Avellaneda",
+        "National University of Avellaneda"
       ],
       "undec": [
         "Universidad Nacional de Chilecito"
