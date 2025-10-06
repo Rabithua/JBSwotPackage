@@ -13,8 +13,19 @@ npm install jbs-swot-email
 ```javascript
 import { verify, school_name, school_name_primary } from "jbs-swot-email";
 
-// Verify email (async)
-const isValid = await verify("student@mit.edu"); // true
+// Verify email (async) - returns detailed status
+const result = await verify("student@mit.edu");
+// Returns: { valid: true, status: "valid" }
+
+// Check for stoplist or abused domains
+const stoplistResult = await verify("student@alumni.stanford.edu");
+// Returns: { valid: false, status: "stoplist" }
+
+const abusedResult = await verify("student@gmail.com");
+// Returns: { valid: false, status: "abused" }
+
+const invalidResult = await verify("student@notaschool.com");
+// Returns: { valid: false, status: "invalid" }
 
 // Get all school names (async) - supports multi-campus and aliases
 const schoolNames = await school_name("student@utoronto.ca");
@@ -27,7 +38,7 @@ const schoolNames = await school_name("student@utoronto.ca");
 //   "Victoria University Toronto, University of Toronto"
 // ]
 
-// Get primary school name (async) - backward compatible
+// Get primary school name (async)
 const primaryName = await school_name_primary("student@utoronto.ca");
 // Returns: "University of St. Michael's College"
 
@@ -38,14 +49,42 @@ const mitNames = await school_name("student@mit.edu");
 
 ## API
 
-- `verify(email: string): Promise<boolean>` - Verify if email belongs to an educational institution
-- `school_name(email: string): Promise<string[] | null>` - Get all school names (supports multi-campus and aliases)
-- `school_name_primary(email: string): Promise<string | null>` - Get primary school name (backward compatible)
+### `verify(email: string): Promise<VerifyResult>`
+
+Verify if email belongs to an educational institution and get detailed status.
+
+**Returns:**
+
+```typescript
+interface VerifyResult {
+  valid: boolean;
+  status: "valid" | "stoplist" | "abused" | "invalid";
+}
+```
+
+- `valid: true, status: "valid"` - Valid educational email
+- `valid: false, status: "stoplist"` - Domain is in stoplist (e.g., alumni emails)
+- `valid: false, status: "abused"` - Domain has been abused for fake signups
+- `valid: false, status: "invalid"` - Not an educational domain
+
+### `school_name(email: string): Promise<string[] | null>`
+
+Get all school names for the email domain. Supports multi-campus schools and aliases.
+
+**Returns:** Array of school names or `null` if domain is stoplist/abused/invalid
+
+### `school_name_primary(email: string): Promise<string | null>`
+
+Get the primary (first) school name for the email domain.
+
+**Returns:** Primary school name or `null` if domain is stoplist/abused/invalid
 
 ## Features
 
 - ✅ Support for multi-campus schools (e.g., University of Toronto's various campuses)
 - ✅ Support for school aliases (e.g., ETH Zürich and Swiss Federal Institute of Technology)
-- ✅ Backward compatible API design
+- ✅ Detects stoplist domains (alumni emails, etc.)
+- ✅ Detects abused domains (known fake signup domains)
+- ✅ Detailed verification status for better error handling
 - ✅ Based on authoritative swot domain database
 - ✅ Supports 25,000+ educational institution domains

@@ -38,7 +38,10 @@
     "sync:swot": "tsx scripts/sync-swot.ts",
     "generate": "tsx scripts/generate.ts",
     "prepare": "npm run sync:swot && npm run generate && npm run build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:example": "node tests/example-verify.js",
+    "test:tree": "node tests/test-tree.js",
+    "test:performance": "node tests/performance-test.js"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
