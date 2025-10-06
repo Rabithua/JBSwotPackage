@@ -1,6 +1,8 @@
+// @deprecated 新的json数据结构对于当前脚本已不适用
 import { readFileSync, readdirSync, statSync, existsSync } from "fs";
 import { join } from "path";
 import { performance } from "perf_hooks";
+
 
 // 测试数据
 const testEmails = [

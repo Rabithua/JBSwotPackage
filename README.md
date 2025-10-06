@@ -88,3 +88,27 @@ Get the primary (first) school name for the email domain.
 - ✅ Detailed verification status for better error handling
 - ✅ Based on authoritative swot domain database
 - ✅ Supports 25,000+ educational institution domains
+
+## Data Source
+
+This package uses domain data from the [JetBrains swot](https://github.com/JetBrains/swot) repository, which is an official JetBrains project used to verify educational email addresses for granting free licenses to students and teachers worldwide.
+
+The swot repository contains a hierarchically structured list of email domains belonging to educational institutions, including colleges, universities, and groups of schools.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Data License
+
+The educational domain data used in this package is from the [JetBrains swot repository](https://github.com/JetBrains/swot), which is licensed under the MIT License:
+
+```
+The MIT License (MIT)
+Copyright (c) 2013 Lee Reilly
+```
+
+## Acknowledgments
+
+- Thanks to [JetBrains](https://www.jetbrains.com/) and [Lee Reilly](https://github.com/leereilly) for maintaining the [swot](https://github.com/JetBrains/swot) repository
+- All contributors to the swot repository for keeping the educational domain data up-to-date
