@@ -6,8 +6,8 @@ import { join } from "node:path";
 const TARGET_DIR = join(process.cwd(), "swot");
 const REPO = process.env.SWOT_REPO || "https://github.com/JetBrains/swot.git";
 
-function run(cmd: string, cwd?: string) {
-  execSync(cmd, { stdio: "inherit", cwd });
+function run(cmd: string, cwd?: string, stdio: any = "inherit") {
+  execSync(cmd, { stdio, cwd });
 }
 
 function ensureDir(dir: string) {
@@ -25,15 +25,15 @@ async function main() {
     run(`git fetch --all --prune`, TARGET_DIR);
     // Prefer origin/main, fallback to origin/master
     try {
-      run(`git checkout main`, TARGET_DIR);
-      run(`git reset --hard origin/main`, TARGET_DIR);
+      run(`git checkout main`, TARGET_DIR, "ignore");
+      run(`git reset --hard origin/main`, TARGET_DIR, "ignore");
     } catch {
       try {
         run(`git checkout master`, TARGET_DIR);
         run(`git reset --hard origin/master`, TARGET_DIR);
       } catch {
         console.warn(
-          "Could not switch to main or master; staying on current branch"
+          "Could not switch to main or master; staying on current branch",
         );
         run(`git pull --rebase`, TARGET_DIR);
       }
