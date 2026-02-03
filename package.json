@@ -1,6 +1,6 @@
 {
   "name": "jbs-swot-email",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Verify student emails and get school names using swot domains.",
   "author": "rabithua",
   "license": "MIT",
@@ -41,7 +41,8 @@
     "release": "tsx scripts/release.ts",
     "test:example": "node tests/example-verify.js",
     "test:tree": "node tests/test-tree.js",
-    "test:performance": "node tests/performance-test.js"
+    "test:performance": "node tests/performance-test.js",
+    "test": "npm run test:tree && npm run test:example"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
